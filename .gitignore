@@ -143,3 +143,6 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+#DB's files
+*.db

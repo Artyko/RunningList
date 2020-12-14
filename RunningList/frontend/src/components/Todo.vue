@@ -2,27 +2,41 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h1>Books</h1>
+        <h1>Tasks</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Book</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Task</button>
         <br><br>
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">Title</th>
-              <th scope="col">Author</th>
-              <th scope="col">Read?</th>
+              <th scope="col">Task</th>
+              <th scope="col">Mo</th>
+              <th scope="col">Tu</th>
+              <th scope="col">We</th>
+              <th scope="col">Th</th>
+              <th scope="col">Fr</th>
+              <th scope="col">Sa</th>
+              <th scope="col">Su</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(book, index) in books" :key="index">
               <td>{{ book.title }}</td>
-              <td>{{ book.author }}</td>
-              <td>
-                <span v-if="book.read">Yes</span>
-                <span v-else>No</span>
+              <td><b-form-checkbox v-if="book.read.includes('Mo')" value="true" v-model="book.Mo" @change=dayUpdate(book)></b-form-checkbox>
+              </td>
+              <td><b-form-checkbox v-if="book.read.includes('Tu')" value="true" v-model="book.Tu" @change=dayUpdate(book)></b-form-checkbox>
+              </td>
+              <td><b-form-checkbox v-if="book.read.includes('We')" value="true" v-model="book.We" @change=dayUpdate(book)></b-form-checkbox>
+              </td>
+              <td><b-form-checkbox v-if="book.read.includes('Th')" value="true" v-model="book.Th" @change=dayUpdate(book)></b-form-checkbox>
+              </td>
+              <td><b-form-checkbox v-if="book.read.includes('Fr')" value="true" v-model="book.Fr" @change=dayUpdate(book)></b-form-checkbox>
+              </td>
+              <td><b-form-checkbox v-if="book.read.includes('Sa')" value="true" v-model="book.Sa" @change=dayUpdate(book)></b-form-checkbox>
+              </td>
+              <td><b-form-checkbox v-if="book.read.includes('Su')" value="true" v-model="book.Su" @change=dayUpdate(book)></b-form-checkbox>
               </td>
               <td>
                 <div class="btn-group" role="group">
@@ -61,19 +75,15 @@
                         placeholder="Enter title">
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-author-group"
-                      label="Author:"
-                      label-for="form-author-input">
-            <b-form-input id="form-author-input"
-                          type="text"
-                          v-model="addBookForm.author"
-                          required
-                          placeholder="Enter author">
-            </b-form-input>
-          </b-form-group>
         <b-form-group id="form-read-group">
           <b-form-checkbox-group v-model="addBookForm.read" id="form-checks">
-            <b-form-checkbox value="true">Read?</b-form-checkbox>
+            <b-form-checkbox value="Mo">Mo</b-form-checkbox>
+            <b-form-checkbox value="Tu">Tu</b-form-checkbox>
+            <b-form-checkbox value="We">We</b-form-checkbox>
+            <b-form-checkbox value="Th">Th</b-form-checkbox>
+            <b-form-checkbox value="Fr">Fr</b-form-checkbox>
+            <b-form-checkbox value="Sa">Sa</b-form-checkbox>
+            <b-form-checkbox value="Su">Su</b-form-checkbox>
           </b-form-checkbox-group>
         </b-form-group>
         <b-button-group>
@@ -109,7 +119,13 @@
           </b-form-group>
         <b-form-group id="form-read-edit-group">
           <b-form-checkbox-group v-model="editForm.read" id="form-checks">
-            <b-form-checkbox value="true">Read?</b-form-checkbox>
+            <b-form-checkbox value="Mo">Mo</b-form-checkbox>
+            <b-form-checkbox value="Tu">Tu</b-form-checkbox>
+            <b-form-checkbox value="We">We</b-form-checkbox>
+            <b-form-checkbox value="Th">Th</b-form-checkbox>
+            <b-form-checkbox value="Fr">Fr</b-form-checkbox>
+            <b-form-checkbox value="Sa">Sa</b-form-checkbox>
+            <b-form-checkbox value="Su">Su</b-form-checkbox>
           </b-form-checkbox-group>
         </b-form-group>
         <b-button-group>
@@ -184,8 +200,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addBookModal.hide();
-      let read = false;
-      if (this.addBookForm.read[0]) read = true;
+      let read = this.addBookForm.read.toString();
       const payload = {
         title: this.addBookForm.title,
         author: this.addBookForm.author,
@@ -205,8 +220,7 @@ export default {
     onSubmitUpdate(evt) {
       evt.preventDefault();
       this.$refs.editBookModal.hide();
-      let read = false;
-      if (this.editForm.read[0]) read = true;
+      let read = this.editBookModal.read.toString()
       const payload = {
         title: this.editForm.title,
         author: this.editForm.author,
@@ -219,7 +233,7 @@ export default {
       axios.put(path, payload)
         .then(() => {
           this.getBooks();
-          this.message = 'Book updated!';
+          this.message = 'Task updated!';
           this.showMessage = true;
         })
         .catch((error) => {
@@ -251,9 +265,30 @@ export default {
     onDeleteBook(book) {
       this.removeBook(book.id);
     },
+    dayUpdate(book){
+      const path = `http://localhost:5000/books/day/${book.id}`;
+      const payload = {
+        Mo: book.Mo,
+        Tu: book.Tu,
+        We: book.We,
+        Th: book.Th,
+        Fr: book.Fr,
+        Sa: book.Sa,
+        Su: book.Su,
+      };
+      axios.post(path, payload)
+        .then(() => {
+          this.getBooks();
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.log(error);
+          this.getBooks();
+        });
+    },
   },
   created() {
-    this.getBooks();
-  },
-};
+    this.getBooks()
+  }
+}
 </script>

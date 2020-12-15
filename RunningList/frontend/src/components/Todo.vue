@@ -5,7 +5,7 @@
         <h1>Tasks</h1>
         <hr><br><br>
         <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Task</button>
+        <button type="button" class="btn btn-success btn-sm" v-b-modal.task-modal>Add Task</button>
         <br><br>
         <table class="table table-hover">
           <thead>
@@ -22,35 +22,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(book, index) in books" :key="index">
-              <td>{{ book.title }}</td>
-              <td><b-form-checkbox v-if="book.read.includes('Mo')" value="true" v-model="book.Mo" @change=dayUpdate(book)></b-form-checkbox>
+            <tr v-for="(task, index) in tasks" :key="index">
+              <td>{{ task.title }}</td>
+              <td><b-form-checkbox v-if="task.read.includes('Mo')" value="true" v-model="task.Mo" @change=dayUpdate(task)></b-form-checkbox>
               </td>
-              <td><b-form-checkbox v-if="book.read.includes('Tu')" value="true" v-model="book.Tu" @change=dayUpdate(book)></b-form-checkbox>
+              <td><b-form-checkbox v-if="task.read.includes('Tu')" value="true" v-model="task.Tu" @change=dayUpdate(task)></b-form-checkbox>
               </td>
-              <td><b-form-checkbox v-if="book.read.includes('We')" value="true" v-model="book.We" @change=dayUpdate(book)></b-form-checkbox>
+              <td><b-form-checkbox v-if="task.read.includes('We')" value="true" v-model="task.We" @change=dayUpdate(task)></b-form-checkbox>
               </td>
-              <td><b-form-checkbox v-if="book.read.includes('Th')" value="true" v-model="book.Th" @change=dayUpdate(book)></b-form-checkbox>
+              <td><b-form-checkbox v-if="task.read.includes('Th')" value="true" v-model="task.Th" @change=dayUpdate(task)></b-form-checkbox>
               </td>
-              <td><b-form-checkbox v-if="book.read.includes('Fr')" value="true" v-model="book.Fr" @change=dayUpdate(book)></b-form-checkbox>
+              <td><b-form-checkbox v-if="task.read.includes('Fr')" value="true" v-model="task.Fr" @change=dayUpdate(task)></b-form-checkbox>
               </td>
-              <td><b-form-checkbox v-if="book.read.includes('Sa')" value="true" v-model="book.Sa" @change=dayUpdate(book)></b-form-checkbox>
+              <td><b-form-checkbox v-if="task.read.includes('Sa')" value="true" v-model="task.Sa" @change=dayUpdate(task)></b-form-checkbox>
               </td>
-              <td><b-form-checkbox v-if="book.read.includes('Su')" value="true" v-model="book.Su" @change=dayUpdate(book)></b-form-checkbox>
+              <td><b-form-checkbox v-if="task.read.includes('Su')" value="true" v-model="task.Su" @change=dayUpdate(task)></b-form-checkbox>
               </td>
               <td>
                 <div class="btn-group" role="group">
                   <button
                           type="button"
                           class="btn btn-warning btn-sm"
-                          v-b-modal.book-update-modal
-                          @click="editBook(book)">
+                          v-b-modal.task-update-modal
+                          @click="edittask(task)">
                       Update
                   </button>
                   <button
                           type="button"
                           class="btn btn-danger btn-sm"
-                          @click="onDeleteBook(book)">
+                          @click="onDeletetask(task)">
                       Delete
                   </button>
                 </div>
@@ -60,9 +60,9 @@
         </table>
       </div>
     </div>
-    <b-modal ref="addBookModal"
-            id="book-modal"
-            title="Add a new book"
+    <b-modal ref="addtaskModal"
+            id="task-modal"
+            title="Add a new task"
             hide-footer>
       <b-form @submit="onSubmit" @reset="onReset" class="w-100">
       <b-form-group id="form-title-group"
@@ -70,13 +70,13 @@
                     label-for="form-title-input">
           <b-form-input id="form-title-input"
                         type="text"
-                        v-model="addBookForm.title"
+                        v-model="addtaskForm.title"
                         required
                         placeholder="Enter title">
           </b-form-input>
         </b-form-group>
         <b-form-group id="form-read-group">
-          <b-form-checkbox-group v-model="addBookForm.read" id="form-checks">
+          <b-form-checkbox-group v-model="addtaskForm.read" id="form-checks">
             <b-form-checkbox value="Mo">Mo</b-form-checkbox>
             <b-form-checkbox value="Tu">Tu</b-form-checkbox>
             <b-form-checkbox value="We">We</b-form-checkbox>
@@ -92,8 +92,8 @@
         </b-button-group>
       </b-form>
     </b-modal>
-    <b-modal ref="editBookModal"
-            id="book-update-modal"
+    <b-modal ref="edittaskModal"
+            id="task-update-modal"
             title="Update"
             hide-footer>
       <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
@@ -143,8 +143,8 @@ import Alert from './Alert.vue';
 export default {
   data() {
     return {
-      books: [],
-      addBookForm: {
+      tasks: [],
+      addtaskForm: {
         title: '',
         author: '',
         read: [],
@@ -163,35 +163,35 @@ export default {
     alert: Alert,
   },
   methods: {
-    getBooks() {
-      const path = 'http://localhost:5000/books';
+    gettasks() {
+      const path = 'http://localhost:5000/tasks';
       axios.get(path)
         .then((res) => {
-          this.books = res.data.books;
+          this.tasks = res.data.tasks;
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
         });
     },
-    addBook(payload) {
-      const path = 'http://localhost:5000/books';
+    addtask(payload) {
+      const path = 'http://localhost:5000/tasks';
       axios.post(path, payload)
         .then(() => {
-          this.getBooks();
-          this.message = 'Book added!';
+          this.gettasks();
+          this.message = 'task added!';
           this.showMessage = true;
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.log(error);
-          this.getBooks();
+          this.gettasks();
         });
     },
     initForm() {
-      this.addBookForm.title = '';
-      this.addBookForm.author = '';
-      this.addBookForm.read = [];
+      this.addtaskForm.title = '';
+      this.addtaskForm.author = '';
+      this.addtaskForm.read = [];
       this.editForm.id = '';
       this.editForm.title = '';
       this.editForm.author = '';
@@ -199,96 +199,96 @@ export default {
     },
     onSubmit(evt) {
       evt.preventDefault();
-      this.$refs.addBookModal.hide();
-      let read = this.addBookForm.read.toString();
+      this.$refs.addtaskModal.hide();
+      let read = this.addtaskForm.read.toString();
       const payload = {
-        title: this.addBookForm.title,
-        author: this.addBookForm.author,
+        title: this.addtaskForm.title,
+        author: this.addtaskForm.author,
         read, // property shorthand
       };
-      this.addBook(payload);
+      this.addtask(payload);
       this.initForm();
     },
     onReset(evt) {
       evt.preventDefault();
-      this.$refs.addBookModal.hide();
+      this.$refs.addtaskModal.hide();
       this.initForm();
     },
-    editBook(book) {
-      this.editForm = book;
+    edittask(task) {
+      this.editForm = task;
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
-      this.$refs.editBookModal.hide();
-      let read = this.editBookModal.read.toString()
+      this.$refs.edittaskModal.hide();
+      let read = this.edittaskModal.read.toString()
       const payload = {
         title: this.editForm.title,
         author: this.editForm.author,
         read,
       };
-      this.updateBook(payload, this.editForm.id);
+      this.updatetask(payload, this.editForm.id);
     },
-    updateBook(payload, bookID) {
-      const path = `http://localhost:5000/books/${bookID}`;
+    updatetask(payload, taskID) {
+      const path = `http://localhost:5000/tasks/${taskID}`;
       axios.put(path, payload)
         .then(() => {
-          this.getBooks();
+          this.gettasks();
           this.message = 'Task updated!';
           this.showMessage = true;
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
-          this.getBooks();
+          this.gettasks();
         });
     },
     onResetUpdate(evt) {
       evt.preventDefault();
-      this.$refs.editBookModal.hide();
+      this.$refs.edittaskModal.hide();
       this.initForm();
-      this.getBooks(); // why?
+      this.gettasks(); // why?
     },
-    removeBook(bookID) {
-      const path = `http://localhost:5000/books/${bookID}`;
+    removetask(taskID) {
+      const path = `http://localhost:5000/tasks/${taskID}`;
       axios.delete(path)
         .then(() => {
-          this.getBooks();
-          this.message = 'Book removed!';
+          this.gettasks();
+          this.message = 'task removed!';
           this.showMessage = true;
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
-          this.getBooks();
+          this.gettasks();
         });
     },
-    onDeleteBook(book) {
-      this.removeBook(book.id);
+    onDeletetask(task) {
+      this.removetask(task.id);
     },
-    dayUpdate(book){
-      const path = `http://localhost:5000/books/day/${book.id}`;
+    dayUpdate(task){
+      const path = `http://localhost:5000/tasks/day/${task.id}`;
       const payload = {
-        Mo: book.Mo,
-        Tu: book.Tu,
-        We: book.We,
-        Th: book.Th,
-        Fr: book.Fr,
-        Sa: book.Sa,
-        Su: book.Su,
+        Mo: task.Mo,
+        Tu: task.Tu,
+        We: task.We,
+        Th: task.Th,
+        Fr: task.Fr,
+        Sa: task.Sa,
+        Su: task.Su,
       };
-      axios.post(path, payload)
+      axios.put(path, payload)
         .then(() => {
-          this.getBooks();
+          this.gettasks();
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.log(error);
-          this.getBooks();
+          this.gettasks();
         });
     },
   },
   created() {
-    this.getBooks()
+    this.gettasks()
   }
 }
 </script>

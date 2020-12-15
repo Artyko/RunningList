@@ -34,40 +34,40 @@ def update_day(task_id, payload):
 
 
 def change_true_to_True(data):
-    return {key: (True if value == 'true' else False) for key, value in data.items()}
+    return {key: (True if value in ('true', True) else False) for key, value in data.items()}
 
 
-@task_routes.route('/books', methods=['GET', 'POST'])
-def all_books():
+@task_routes.route('/tasks', methods=['GET', 'POST'])
+def all_tasks():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
         add_task(post_data)
-        response_object['message'] = 'Book added!'
+        response_object['message'] = 'task added!'
     elif request.method == 'GET':
-        response_object['books'] = return_all_tasks()
+        response_object['tasks'] = return_all_tasks()
     return jsonify(response_object)
 
 
-@task_routes.route('/books/<book_id>', methods=['PUT', 'DELETE'])
-def single_book(book_id):
+@task_routes.route('/tasks/<task_id>', methods=['PUT', 'DELETE'])
+def single_task(task_id):
     response_object = {'status': 'success'}
     if request.method == 'PUT':
         post_data = request.get_json()
-        remove_task(book_id)
+        remove_task(task_id)
         add_task(post_data)
-        response_object['message'] = 'Book updated!'
+        response_object['message'] = 'task updated!'
     if request.method == 'DELETE':
-        remove_task(book_id)
-        response_object['message'] = 'Book removed!'
+        remove_task(task_id)
+        response_object['message'] = 'task removed!'
     return jsonify(response_object)
 
 
-@task_routes.route('/books/day/<book_id>', methods=['POST'])
-def single_book_day(book_id):
+@task_routes.route('/tasks/day/<task_id>', methods=['PUT'])
+def single_task_day(task_id):
     response_object = {'status': 'success'}
-    if request.method == 'POST':
+    if request.method == 'PUT':
         post_data = request.get_json()
         normalized_data = change_true_to_True(post_data)
-        update_day(book_id, normalized_data)
+        update_day(task_id, normalized_data)
     return jsonify(response_object)

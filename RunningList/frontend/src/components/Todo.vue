@@ -107,18 +107,8 @@
                         placeholder="Enter title">
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-author-edit-group"
-                      label="Author:"
-                      label-for="form-author-edit-input">
-            <b-form-input id="form-author-edit-input"
-                          type="text"
-                          v-model="editForm.author"
-                          required
-                          placeholder="Enter author">
-            </b-form-input>
-          </b-form-group>
         <b-form-group id="form-read-edit-group">
-          <b-form-checkbox-group v-model="editForm.read" id="form-checks">
+          <b-form-checkbox-group v-model="editForm.read" id="form-edit-checks">
             <b-form-checkbox value="Mo">Mo</b-form-checkbox>
             <b-form-checkbox value="Tu">Tu</b-form-checkbox>
             <b-form-checkbox value="We">We</b-form-checkbox>
@@ -220,7 +210,7 @@ export default {
     onSubmitUpdate(evt) {
       evt.preventDefault();
       this.$refs.edittaskModal.hide();
-      let read = this.edittaskModal.read.toString()
+      let read = this.editForm.read.toString()
       const payload = {
         title: this.editForm.title,
         author: this.editForm.author,

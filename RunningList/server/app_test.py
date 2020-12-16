@@ -29,6 +29,6 @@ class TestAPI:
 
     def test_get_api_endpoint(self):
         r = self.app.get('/tasks')
-        print(r.json)
-        assert r.json == {"status": "success"}
+        print(r.json["status"])
+        assert r.json["status"] == "success"
         assert r.status_code == 200

@@ -1,4 +1,5 @@
-from flask import jsonify, request, Blueprint
+from flask import jsonify, request, Blueprint, redirect
+
 from app.models import Task, TaskSerialization, CompleteDaysSerialization
 from app import db
 
@@ -66,6 +67,11 @@ def handover_complete_days(task_id, post_data):
                                      Task.Su).filter_by(id=task_id).all()
     serialized_days = query_shema.dump(complete_days)
     return {**post_data, **serialized_days[0]}
+
+
+@task_routes.route('/')
+def hello():
+    return redirect("/tasks", code=301)
 
 
 @task_routes.route('/tasks', methods=['GET', 'POST'])

@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     gettasks() {
-      const path = 'http://localhost:5000/tasks';
+      const path = 'https://runninglist.herokuapp.com/tasks';
       axios.get(path)
         .then((res) => {
           this.tasks = res.data.tasks;
@@ -165,7 +165,7 @@ export default {
         });
     },
     addtask(payload) {
-      const path = 'http://localhost:5000/tasks';
+      const path = 'https://runninglist.herokuapp.com/tasks';
       axios.post(path, payload)
         .then(() => {
           this.gettasks();
@@ -219,7 +219,7 @@ export default {
       this.updatetask(payload, this.editForm.id);
     },
     updatetask(payload, taskID) {
-      const path = `http://localhost:5000/tasks/${taskID}`;
+      const path = `https://runninglist.herokuapp.com/tasks/${taskID}`;
       axios.put(path, payload)
         .then(() => {
           this.gettasks();
@@ -239,7 +239,7 @@ export default {
       this.gettasks(); // why?
     },
     removetask(taskID) {
-      const path = `http://localhost:5000/tasks/${taskID}`;
+      const path = `https://runninglist.herokuapp.com/tasks/${taskID}`;
       axios.delete(path)
         .then(() => {
           this.gettasks();
@@ -256,7 +256,7 @@ export default {
       this.removetask(task.id);
     },
     dayUpdate(task){
-      const path = `http://localhost:5000/tasks/day/${task.id}`;
+      const path = `https://runninglist.herokuapp.com/tasks/day/${task.id}`;
       const payload = {
         Mo: task.Mo,
         Tu: task.Tu,

@@ -1,1 +1,0 @@
-web: npm start; gunicorn runninglist:app
